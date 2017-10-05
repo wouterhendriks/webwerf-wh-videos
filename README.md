@@ -33,7 +33,7 @@ Optionally add default CSS (.scss file):
 @import '~webwerf-wh-videos/src/videos';
 
 @at-root {
-  @include @include webwerf-wh-videos(200px, 15px, 3); // min-width, gutter, max-cols
+  @include webwerf-wh-videos(200px, 15px, 3); // min-width, gutter, max-cols
 }
 ```
 
