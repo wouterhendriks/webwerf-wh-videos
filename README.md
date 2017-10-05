@@ -1,4 +1,4 @@
-# WebHare news folder
+# WebHare videos folder
 
 ## Install
 
@@ -39,4 +39,4 @@ Optionally add default CSS (.scss file):
 
 You can overwrite the CSS to set your own styling.
 
-After reloading site profiles you can add a folder of type `http://www.mydomain.com/webwerf-wh-videos/`. This folder automatically creates an index file (you should protect it) and lets you add news items to it.
+After reloading site profiles you can add a folder of type `http://www.mydomain.com/webwerf-wh-videos/`. This folder automatically creates an index file (you should protect it) and lets you add videos to it by creating new files in the folder.
