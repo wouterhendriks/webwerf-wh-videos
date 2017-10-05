@@ -27,6 +27,12 @@
     &__title {
       padding: 7px;
     }
+
+    @at-root {
+      .mediabox-content {
+        outline: none;
+      }
+    }
   }
 }
 
