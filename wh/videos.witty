@@ -1,0 +1,29 @@
+[component index]
+  <div class="webwerf-wh-videos">
+    <div class="webwerf-wh-videos__rtd">
+      [rtd]
+    </div>
+    <div class="webwerf-wh-videos__items">
+      [forevery videos]
+        <a class="webwerf-wh-videos__item mediabox" href="[videolink]">
+          <div class="webwerf-wh-videos__movie-thumb-container">
+            <img class="webwerf-wh-videos__movie-thumb" src="[thumb_wrapped.link]" alt="[title]" />
+            <div class="webwerf-wh-videos-play">
+              <div class="webwerf-wh-videos-play__play"></div>
+            </div>
+          </div>
+          <div class="webwerf-wh-videos__title">[title]</div>
+        </a>
+      [/forevery]
+    </div>
+  </div>
+[/component]
+
+[component single]
+  [if is_vimeo]
+    <iframe src="https://player.vimeo.com/video/[videoid]" frameborder="0" allowfullscreen width="640" height="360"></iframe>
+  [else]
+    <iframe src="https://www.youtube.com/embed/[videoid]" frameborder="0" allowfullscreen width="640" height="360"></iframe>
+  [/if]
+
+[/component]

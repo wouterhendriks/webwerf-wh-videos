@@ -1,0 +1,90 @@
+<?wh
+LOADLIB "wh::datetime.whlib";
+LOADLIB "wh::witty.whlib";
+LOADLIB "module::publisher/webdesign.whlib";
+LOADLIB "module::system/cache.whlib";
+LOADLIB "module::system/database.whlib";
+LOADLIB "module::system/whfs.whlib";
+
+PUBLIC OBJECTTYPE VideosPage EXTEND StaticPageBase
+<
+  PUBLIC OBJECT webdesign;
+  PUBLIC RECORD wittydata;
+  PUBLIC BOOLEAN isindex;
+
+  OBJECT videositemtype;
+  OBJECT videosfoldertype;
+
+  STRING ns_scope;
+
+  UPDATE PUBLIC MACRO PrepareForRendering(OBJECT webdesign)
+  {
+    INSERT "page-webwerf-wh-videos" INTO webdesign->htmlclasses AT END;
+
+    this->webdesign := webdesign;
+    this->isindex := webdesign->targetfolder->indexdoc = webdesign->targetobject->id;
+
+    // extract the scope from the folder type namespace
+    this->ns_scope := Left(webdesign->targetfolder->typens, SearchLastSubstring(webdesign->targetfolder->typens, "webwerf-wh-videos-folder"));
+
+    this->videositemtype := OpenWHFSType(`${this->ns_scope}webwerf-wh-videos-item`);
+    this->videosfoldertype := OpenWHFSType(webdesign->targetfolder->typens);
+
+    IF (this->isindex)
+      this->DoIndex();
+    ELSE
+      this->DoSingle();
+  }
+
+  MACRO DoIndex()
+  {
+    RECORD ARRAY videos :=
+         SELECT id
+              , title
+              , creationdate
+              , link := indexurl
+           FROM system.fs_objects
+          WHERE parent = this->webdesign->targetfolder->id
+                AND type = this->videositemtype->id
+                AND title != ""
+                AND indexurl != ""
+       ORDER BY ordering, ToUpperCase(title), id;
+
+    videos :=
+        SELECT *
+             , thumb_wrapped := WrapCachedImage(video.thumbnail, [ method := "fill", setwidth := 1000, setheight := 563, format := "image/jpeg" ])
+             , videolink := this->GetVideoLink(video)
+          FROM this->videositemtype->EnrichWithBulkData(videos, [ "video" ]);
+
+    this->wittydata := [ videos := videos
+                       , rtd := PTR this->webdesign->OpenRTDFromFile(this->webdesign->targetobject)->RenderAllObjects()
+                       ];
+  }
+
+  MACRO DoSingle()
+  {
+    RECORD videodata := this->videositemtype->GetInstanceData(this->webdesign->targetobject->id);
+
+    this->wittydata := [ videoid := videodata.video.videoid
+                       , videolink := this->GetVideoLink(videodata.video)
+                       , is_vimeo := ToUpperCase(videodata.video.network) = "VIMEO"
+                       ];
+  }
+
+  STRING FUNCTION GetVideoLink(RECORD videoinfo)
+  {
+    IF (videoinfo.network = "youtube")
+      RETURN "https://www.youtube.com/watch?v=" || videoinfo.videoid;
+    ELSE IF (videoinfo.network = "vimeo")
+      RETURN "https://vimeo.com/" || videoinfo.videoid;
+
+    RETURN "";
+  }
+
+  UPDATE PUBLIC MACRO RunBody(OBJECT webdesign)
+  {
+    STRING comp := this->isindex ? "index" : "single";
+
+    LoadWittyLibrary(this->pagefolder || "videos.witty", "HTML-NI")->RunComponent(comp, this->wittydata);
+  }
+>;

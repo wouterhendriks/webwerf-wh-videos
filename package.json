@@ -1,0 +1,13 @@
+{
+  "name": "webwerf-wh-videos",
+  "version": "1.0.0",
+  "main": "src/index.es",
+  "author": "wouter@webwerf.nl",
+  "license": "MIT",
+  "dependencies": {
+    "mediabox": "^1.1.2"
+  },
+  "webhare": {
+    "scopedsiteprofile": "wh/videos.siteprl"
+  }
+}

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<siteprofile xmlns="http://www.webhare.net/xmlns/publisher/siteprofile"
+             xmlns:p="http://www.webhare.net/xmlns/publisher/components"
+             >
+
+  <contenttype namespace="scope:webwerf-wh-videos-folder"></contenttype>
+
+  <foldertype typedef="scope:webwerf-wh-videos-folder"
+              title="Video's"
+              tolliumicon="tollium:folders/video"
+              >
+  </foldertype>
+
+  <apply>
+    <to type="folder" foldertype="scope:webwerf-wh-videos-folder" />
+    <folderindex indexfile="newfile"
+                 newfiletype="http://www.webhare.net/xmlns/publisher/richdocumentfile"
+                 newfilename="videos.rtd"
+                 protectindexfile="true"
+                 />
+  </apply>
+
+  <filetype typedef="scope:webwerf-wh-videos-item"
+            title="Video"
+            blobiscontent="false"
+            ispublishable="true"
+            tolliumicon="tollium:files/video"
+            isacceptableindex="false"
+            ispublishedassubdir="true"
+            needstemplate="true"            />
+
+  <contenttype namespace="scope:webwerf-wh-videos-item">
+    <member name="video" type="instance" />
+  </contenttype>
+
+  <tabsextension name="video" xmlns="http://www.webhare.net/xmlns/tollium/screens">
+    <newtab title="Video">
+      <heading title="Video" />
+      <p:embedvideo composition="contentdata" cellname="video" title="" errorlabel="Video" required="true" />
+    </newtab>
+  </tabsextension>
+
+  <apply priority="10">
+    <to type="all" parenttype="scope:webwerf-wh-videos-folder" />
+    <denyfiletype typedef="*" />
+    <denyfoldertype typedef="*" />
+    <allowfiletype typedef="scope:webwerf-wh-videos-item" />
+    <bodyrenderer library="videos.whlib" objectname="videospage" />
+  </apply>
+
+  <apply>
+    <to type="file" filetype="scope:webwerf-wh-videos-item" />
+    <extendproperties extension=".video" contenttype="scope:webwerf-wh-videos-item" />
+    <setobjecteditor name="publisher:propertydialog" />
+  </apply>
+
+</siteprofile>
